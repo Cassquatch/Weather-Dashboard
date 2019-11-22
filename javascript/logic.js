@@ -8,7 +8,7 @@ console.log(current_date);
 
 function displayForecast(){
     currentWeather();
-    fiveDayForecast();
+     fiveDayForecast();
     function currentWeather(){
        
         city = $("#city").val().trim();
@@ -24,9 +24,10 @@ function displayForecast(){
             
 
             console.log(weather);
+            console.log(json);
             $("#current-city").text(json.name + " " + current_date);
             $("#weather-image").attr("src", "http://openweathermap.org/img/w/" + json.weather[0].icon + ".png");
-            $("#temperature").text(temp.toFixed(2));
+            $("#temperature").text(temp.toFixed(2) + "°F");
             $("#humidity").text(json.main.humidity + "%");
             $("#windspeed").text(windspeed.toFixed(2) + " " + "mph");
         });
@@ -56,9 +57,22 @@ function displayForecast(){
             maybe make html cards if normal tags dont work
 
             */ 
-            for(let i = 3; i < response.list.length; i+=8){
+            for(let i = 0; i < response.list.length; i++){
                 //change each text area here
-                $("#day-" + day_counter).children()
+               let date_and_time = response.list[i].dt_txt;
+               let date = date_and_time.split(" ")[0];
+               let time = date_and_time.split(" ")[1];
+
+               if(time === "15:00:00"){
+                   let year = date.split("-")[0];
+                   let month = date.split("-")[1];
+                   let day = date.split("-")[2];
+                    $("#day-" + day_counter).children(".card-date").text(month + "/" + day + "/" + year);
+                    $("#day-" + day_counter).children(".weather-icon").attr("src","http://api.openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png");
+                    $("#day-" + day_counter).children(".weather-temp").text("Temp: " + ((response.list[i].main.temp - 273.15) * (9/5) + 32).toFixed(2) + "°F");
+                    $("#day-" + day_counter).children(".weather-humidity").text("Humidity: " + response.list[i].main.humidity + "%");
+                    day_counter++;
+               }
             }
         });
     }
