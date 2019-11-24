@@ -10,16 +10,11 @@ $(document).ready(function () {
     console.log(search_history);
     console.log(current_date);
     
-    //  function displayForecast() {
-    //     currentWeather();
-        
-    //     fiveDayForecast();
-    //     displaySearchHistory();
-    //  }
+    
+    displaySearchHistory();
     function currentWeather() {
         
-        console.log($(this).attr("id"));
-        console.log($(this).text());
+        
         if($(this).attr("id") === "submit-city"){
 
             city = $("#city").val();
@@ -28,10 +23,16 @@ $(document).ready(function () {
             city = $(this).text();
             console.log(city);
         }
-        //city = $("#city").val();
-        weather = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
-        search_history.push(city);
         
+        weather = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
+        console.log(search_history.indexOf(city));
+        
+        if(search_history.indexOf(city) === -1){
+
+            search_history.push(city);
+        }
+        
+        console.log(search_history);
         localStorage.setItem("cities", JSON.stringify(search_history));
         
         $.getJSON(weather, function (json) {
@@ -58,22 +59,13 @@ $(document).ready(function () {
         let five_day_forecast = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&APPID=" + appID;
         console.log(five_day_forecast);
         let day_counter = 1;
-        //    //loop through the five day forecast, display each day at 3pm, 
-        // //so something like, 
-        //      for(i = 3; i < response.list.length; i += 8){
-        //          display the forecast as individual days in the html
-        //      }
-
+        
         $.ajax({
             url: five_day_forecast,
             method: "GET"
         }).then(function (response) {
 
-            /*
-            set the day containers and have an id that is the day count, then increment the day count by one as well as the loop incrementer, to try and display the days
-            maybe make html cards if normal tags dont work
- 
-            */
+            
             for (let i = 0; i < response.list.length; i++) {
                 //change each text area here
                 let date_and_time = response.list[i].dt_txt;
@@ -95,25 +87,30 @@ $(document).ready(function () {
     }
 
     function displaySearchHistory(){
-
-        
+       
+        $("#search-history").empty();
         search_history.forEach(function(city){
             
             //check to see if an entry is already part of search history, and don't add a second version of it
-           
-
+            
+            
+            
+            
+            
                 console.log(search_history);
                 let history_item = $("<li>");
-                // history_item.attr("id", "submit-city");
+               
                 history_item.addClass("list-group-item btn btn-light");
                 history_item.text(city);
                 
-        
                 $("#search-history").prepend(history_item);
                 
-                search_history = [];
-            
-        });
+                
+                
+            });
+            $(".btn").click(currentWeather);
+            $(".btn").click(fiveDayForecast);
+        
 
     }
     function clearHistory(){
@@ -123,8 +120,7 @@ $(document).ready(function () {
     }
     //put the listener on btn class so that all buttons have listener
     $("#clear-history").click(clearHistory);
-    $(".btn").click(currentWeather);
-    $(".btn").click(fiveDayForecast);
+   
     $("#submit-city").click(displaySearchHistory);
 
 });
