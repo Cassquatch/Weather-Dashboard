@@ -10,28 +10,36 @@ $(document).ready(function () {
     console.log(search_history);
     console.log(current_date);
     
-    function displayForecast() {
-        currentWeather();
-        fiveDayForecast();
-        displaySearchHistory();
-
-    }
+    //  function displayForecast() {
+    //     currentWeather();
+        
+    //     fiveDayForecast();
+    //     displaySearchHistory();
+    //  }
     function currentWeather() {
+        
+        console.log($(this).attr("id"));
+        console.log($(this).text());
+        if($(this).attr("id") === "submit-city"){
 
-        
             city = $("#city").val();
-        
+            console.log(city);
+        }else{
+            city = $(this).text();
+            console.log(city);
+        }
+        //city = $("#city").val();
         weather = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
         search_history.push(city);
-
+        
         localStorage.setItem("cities", JSON.stringify(search_history));
-
+        
         $.getJSON(weather, function (json) {
             let temp = (json.main.temp - 273.15) * (9 / 5) + 32;
             let windspeed = json.wind.speed * 2.237;
-
-
-
+            
+            
+            
             console.log(weather);
             console.log(json);
             $("#current-city").text(json.name + " " + current_date);
@@ -40,11 +48,11 @@ $(document).ready(function () {
             $("#humidity").text(json.main.humidity + "%");
             $("#windspeed").text(windspeed.toFixed(2) + " " + "mph");
         });
-
-
-
-
-
+        
+        
+        
+        
+        
     }
     function fiveDayForecast() {
         let five_day_forecast = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&APPID=" + appID;
@@ -96,12 +104,13 @@ $(document).ready(function () {
 
                 console.log(search_history);
                 let history_item = $("<li>");
-                history_item.attr("class", "btn btn-light");
-                history_item.addClass("list-group-item");
+                // history_item.attr("id", "submit-city");
+                history_item.addClass("list-group-item btn btn-light");
                 history_item.text(city);
                 
         
                 $("#search-history").prepend(history_item);
+                
                 search_history = [];
             
         });
@@ -114,6 +123,8 @@ $(document).ready(function () {
     }
     //put the listener on btn class so that all buttons have listener
     $("#clear-history").click(clearHistory);
-    $("#submit-city").click(displayForecast);
+    $(".btn").click(currentWeather);
+    $(".btn").click(fiveDayForecast);
+    $("#submit-city").click(displaySearchHistory);
 
 });
