@@ -1,71 +1,57 @@
 $(document).ready(function () {
     let appID = "816a6ba18e5f3b77cc12c8f07244ee1f";
-    
     let weather = "";
     let city = "";
     let current_date = moment().format("L");
-    let search_history =JSON.parse(localStorage.getItem("cities")) === null ? [] : JSON.parse(localStorage.getItem("cities"));
-    
-    
+    let search_history = JSON.parse(localStorage.getItem("cities")) === null ? [] : JSON.parse(localStorage.getItem("cities"));
+
     console.log(search_history);
     console.log(current_date);
-    
-    
+
     displaySearchHistory();
     function currentWeather() {
-        
-        
-        if($(this).attr("id") === "submit-city"){
 
+
+        if ($(this).attr("id") === "submit-city") {
             city = $("#city").val();
-            console.log(city);
-        }else{
+        } else {
             city = $(this).text();
-            console.log(city);
         }
-        
+
         weather = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
         console.log(search_history.indexOf(city));
-        
-        if(search_history.indexOf(city) === -1){
+
+        if (search_history.indexOf(city) === -1) {
 
             search_history.push(city);
         }
-        
+
         console.log(search_history);
         localStorage.setItem("cities", JSON.stringify(search_history));
-        
+
         $.getJSON(weather, function (json) {
             let temp = (json.main.temp - 273.15) * (9 / 5) + 32;
             let windspeed = json.wind.speed * 2.237;
-            
-            
-            
-            console.log(weather);
-            console.log(json);
+
             $("#current-city").text(json.name + " " + current_date);
             $("#weather-img").attr("src", "http://openweathermap.org/img/w/" + json.weather[0].icon + ".png");
             $("#temperature").text(temp.toFixed(2) + "°F");
             $("#humidity").text(json.main.humidity + "%");
             $("#windspeed").text(windspeed.toFixed(2) + " " + "mph");
         });
-        
-        
-        
-        
-        
     }
+
     function fiveDayForecast() {
         let five_day_forecast = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&APPID=" + appID;
-        console.log(five_day_forecast);
+       
         let day_counter = 1;
-        
+
         $.ajax({
             url: five_day_forecast,
             method: "GET"
         }).then(function (response) {
 
-            
+
             for (let i = 0; i < response.list.length; i++) {
                 //change each text area here
                 let date_and_time = response.list[i].dt_txt;
@@ -86,41 +72,31 @@ $(document).ready(function () {
         });
     }
 
-    function displaySearchHistory(){
-       
+    function displaySearchHistory() {
+
         $("#search-history").empty();
-        search_history.forEach(function(city){
-            
+        search_history.forEach(function (city) {
+
             //check to see if an entry is already part of search history, and don't add a second version of it
-            
-            
-            
-            
-            
-                console.log(search_history);
-                let history_item = $("<li>");
-               
-                history_item.addClass("list-group-item btn btn-light");
-                history_item.text(city);
-                
-                $("#search-history").prepend(history_item);
-                
-                
-                
-            });
-            $(".btn").click(currentWeather);
-            $(".btn").click(fiveDayForecast);
-        
+            console.log(search_history);
+            let history_item = $("<li>");
+
+            history_item.addClass("list-group-item btn btn-light");
+            history_item.text(city);
+
+            $("#search-history").prepend(history_item);
+        });
+        $(".btn").click(currentWeather);
+        $(".btn").click(fiveDayForecast);
 
     }
-    function clearHistory(){
+    function clearHistory() {
         $("#search-history").empty();
         search_history = [];
         localStorage.setItem("cities", JSON.stringify(search_history));
     }
     //put the listener on btn class so that all buttons have listener
     $("#clear-history").click(clearHistory);
-   
     $("#submit-city").click(displaySearchHistory);
 
 });
