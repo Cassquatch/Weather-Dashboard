@@ -18,7 +18,7 @@ $(document).ready(function () {
             city = $(this).text();
         }
 
-        weather = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
+        weather = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appID;
         console.log(search_history.indexOf(city));
 
         if (search_history.indexOf(city) === -1) {
@@ -34,7 +34,7 @@ $(document).ready(function () {
             let windspeed = json.wind.speed * 2.237;
 
             $("#current-city").text(json.name + " " + current_date);
-            $("#weather-img").attr("src", "http://openweathermap.org/img/w/" + json.weather[0].icon + ".png");
+            $("#weather-img").attr("src", "https://openweathermap.org/img/w/" + json.weather[0].icon + ".png");
             $("#temperature").text(temp.toFixed(2) + "°F");
             $("#humidity").text(json.main.humidity + "%");
             $("#windspeed").text(windspeed.toFixed(2) + " " + "mph");
@@ -42,7 +42,7 @@ $(document).ready(function () {
     }
 
     function fiveDayForecast() {
-        let five_day_forecast = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&APPID=" + appID;
+        let five_day_forecast = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&APPID=" + appID;
        
         let day_counter = 1;
 
@@ -63,7 +63,7 @@ $(document).ready(function () {
                     let month = date.split("-")[1];
                     let day = date.split("-")[2];
                     $("#day-" + day_counter).children(".card-date").text(month + "/" + day + "/" + year);
-                    $("#day-" + day_counter).children(".weather-icon").attr("src", "http://api.openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png");
+                    $("#day-" + day_counter).children(".weather-icon").attr("src", "https://api.openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png");
                     $("#day-" + day_counter).children(".weather-temp").text("Temp: " + ((response.list[i].main.temp - 273.15) * (9 / 5) + 32).toFixed(2) + "°F");
                     $("#day-" + day_counter).children(".weather-humidity").text("Humidity: " + response.list[i].main.humidity + "%");
                     day_counter++;
